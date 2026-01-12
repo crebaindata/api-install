@@ -1,18 +1,28 @@
-# Crebain Python SDK
+# Crebain API Client
 
-A lightweight, typed Python client for the Crebain API.
+A lightweight, typed Python client for the Crebain API with examples and documentation.
+
+## Repository Contents
+
+```
+.
+├── crebain_client-1.0.0-py3-none-any.whl   # Python SDK package
+├── test.py                                  # Full integration example
+├── test_webhook.py                          # Webhook server example
+├── docs/
+│   ├── API_CONTRACT.md                      # API contract specification
+│   ├── CHANGELOG.md                         # Version history
+│   ├── CLIENT_API_GUIDE.md                  # Comprehensive client guide
+│   └── SLAS_LIMITS.md                       # Rate limits and SLAs
+└── README.md
+```
 
 ## Installation
 
-```bash
-pip install crebain-client
-```
-
-Or install from source:
+Install the SDK from the included wheel file:
 
 ```bash
-cd sdk
-pip install -e ".[dev]"
+pip install crebain_client-1.0.0-py3-none-any.whl
 ```
 
 ## Quickstart
@@ -47,7 +57,62 @@ for file in result.files_available:
     print(f"{file.filename} -> {file.signed_url}")
 ```
 
-For a complete working example with file downloads, error handling, and request tracing, see [`test.py`](../test.py) in the repository root.
+## Examples
+
+### Full Integration Example (`test.py`)
+
+A complete working example demonstrating:
+- Configuration loading from environment variables
+- Entity check/onboarding with idempotency
+- File download from signed URLs
+- Request tracing and logging
+- Error handling
+
+```bash
+# Set environment variables (optional - defaults are provided)
+export CREBAIN_API_KEY="ck_live_..."
+export CREBAIN_BASE_URL="https://<project>.supabase.co/functions/v1/api"
+
+# Run the example
+python test.py
+```
+
+### Webhook Server Example (`test_webhook.py`)
+
+A Flask-based webhook server for receiving async notifications:
+
+```bash
+# Install dependencies
+pip install flask crebain-client
+
+# Start the webhook server
+python test_webhook.py
+
+# In another terminal, expose with ngrok
+ngrok http 5001
+
+# Register the webhook
+python test_webhook.py --register https://your-ngrok-url.ngrok.io/webhook
+
+# List registered webhooks
+python test_webhook.py --list
+```
+
+The webhook server:
+- Verifies webhook signatures using `verify_signature()`
+- Handles `request.complete` events
+- Includes a health check endpoint at `/health`
+
+## Documentation
+
+Detailed documentation is available in the `docs/` folder:
+
+| Document | Description |
+|----------|-------------|
+| [API_CONTRACT.md](docs/API_CONTRACT.md) | API contract specification and endpoint details |
+| [CLIENT_API_GUIDE.md](docs/CLIENT_API_GUIDE.md) | Comprehensive guide for using the client SDK |
+| [CHANGELOG.md](docs/CHANGELOG.md) | Version history and release notes |
+| [SLAS_LIMITS.md](docs/SLAS_LIMITS.md) | Rate limits and service level agreements |
 
 ## Features
 
@@ -282,37 +347,6 @@ def handle_webhook():
         # Process completion...
 
     return 'OK', 200
-```
-
-## Updating the OpenAPI Spec
-
-To sync the pinned OpenAPI spec:
-
-```bash
-# From URL
-python scripts/fetch_openapi.py --url https://your-api.com/openapi.yaml
-
-# From local file
-python scripts/fetch_openapi.py --path ../openapi.yaml
-
-# Then run tests
-pytest
-```
-
-## Development
-
-```bash
-# Install dev dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest
-
-# Run tests with coverage
-pytest --cov=crebain_client
-
-# Type checking
-mypy src/crebain_client
 ```
 
 ## License
