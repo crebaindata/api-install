@@ -54,9 +54,9 @@ for entity in page.entities:
 
 # Check/create an entity
 result = client.check_entity(
-    external_entity_id="customer-123",
-    name="Acme Corporation",
-    metadata={"industry": "Technology"},
+    external_entity_id="stenn",
+    name="Stenn Technologies",
+    metadata={"sector": "FinTech"},
     idempotency_key="unique-request-id"
 )
 print(f"Entity ID: {result.entity_id}")
