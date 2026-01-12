@@ -21,7 +21,7 @@ from crebain_client import CrebainClient, verify_signature
 WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "")
 CREBAIN_API_KEY = os.getenv("CREBAIN_API_KEY", "")
 CREBAIN_BASE_URL = os.getenv("CREBAIN_BASE_URL", "")
-SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
 
 # Logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(message)s")
@@ -84,9 +84,7 @@ def health():
 
 def register_webhook(webhook_url: str):
     """Register a webhook with the Crebain API."""
-    client = CrebainClient(api_key=CREBAIN_API_KEY, base_url=CREBAIN_BASE_URL)
-    # Add Supabase authorization header (required for Supabase Edge Functions)
-    client._session.headers['Authorization'] = f'Bearer {SUPABASE_SERVICE_ROLE_KEY}'
+    client = CrebainClient(api_key=CREBAIN_API_KEY, base_url=CREBAIN_BASE_URL, supabase_anon_key=SUPABASE_ANON_KEY)
 
     try:
         webhook = client.create_webhook(
@@ -104,9 +102,7 @@ def register_webhook(webhook_url: str):
 
 def list_webhooks():
     """List all registered webhooks."""
-    client = CrebainClient(api_key=CREBAIN_API_KEY, base_url=CREBAIN_BASE_URL)
-    # Add Supabase authorization header (required for Supabase Edge Functions)
-    client._session.headers['Authorization'] = f'Bearer {SUPABASE_SERVICE_ROLE_KEY}'
+    client = CrebainClient(api_key=CREBAIN_API_KEY, base_url=CREBAIN_BASE_URL, supabase_anon_key=SUPABASE_ANON_KEY)
 
     webhooks = client.list_webhooks()
     logger.info("Registered webhooks:")

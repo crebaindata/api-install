@@ -56,8 +56,8 @@ client = CrebainClient(
 # Replace <PROJECT_REF> with your Supabase project reference.
 
 # Add Supabase authorization (required)
-client._session.headers['Authorization'] = 'Bearer <SUPABASE_SERVICE_ROLE_KEY>'
-# Replace <SUPABASE_SERVICE_ROLE_KEY> with your Supabase service role key
+client._session.headers['Authorization'] = 'Bearer <SUPABASE_ANON_KEY>'
+# Replace <SUPABASE_ANON_KEY> with your Supabase anon key
 
 # List entities
 page = client.list_entities(limit=10)
