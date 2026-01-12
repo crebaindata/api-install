@@ -24,6 +24,7 @@ from crebain_client import CrebainClient, ApiError
 # Run:
 #   export CREBAIN_API_KEY="ck_live_..."
 #   export CREBAIN_BASE_URL="https://<project-ref>.supabase.co/functions/v1/api"
+#   export CREBAIN_ANON_KEY="https://<project-ref>.supabase.co/functions/v1/api"
 #   python test.py
 #
 # IMPORTANT: Do NOT paste multi-line blocks into env vars!
