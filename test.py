@@ -24,6 +24,7 @@ from crebain_client import CrebainClient, ApiError
 # Run:
 #   export CREBAIN_API_KEY="ck_live_..."
 #   export CREBAIN_BASE_URL="https://<project-ref>.supabase.co/functions/v1/api"
+#   export SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIs..."
 #   python test.py
 #
 # IMPORTANT: Do NOT paste multi-line blocks into env vars!
@@ -34,6 +35,7 @@ from crebain_client import CrebainClient, ApiError
 
 CREBAIN_API_KEY = ""  # Set via environment variable or replace with your key
 CREBAIN_BASE_URL = "https://msyixlvjyqnmujtjkbfb.supabase.co/functions/v1/api"
+SUPABASE_SERVICE_ROLE_KEY = ""  # Set via environment variable or replace with your Supabase service role key
 
 
 # =============================================================================
@@ -44,6 +46,7 @@ CREBAIN_BASE_URL = "https://msyixlvjyqnmujtjkbfb.supabase.co/functions/v1/api"
 class Config:
     api_key: str
     base_url: str
+    supabase_key: str
     download_dir: str = "downloads"
     timeout_seconds: int = 30
 
@@ -51,6 +54,7 @@ class Config:
     def load() -> "Config":
         api_key = os.getenv("CREBAIN_API_KEY", CREBAIN_API_KEY).strip()
         base_url = os.getenv("CREBAIN_BASE_URL", CREBAIN_BASE_URL).strip().rstrip("/")
+        supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY", SUPABASE_SERVICE_ROLE_KEY).strip()
 
         # Validate API key
         if not api_key:
@@ -89,9 +93,18 @@ class Config:
                 f'  export CREBAIN_BASE_URL="https://<project>.supabase.co/functions/v1/api"'
             )
 
+        # Validate Supabase key
+        if not supabase_key:
+            raise ValueError(
+                "Missing SUPABASE_SERVICE_ROLE_KEY environment variable.\n\n"
+                "Fix:\n"
+                '  export SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIs..."'
+            )
+
         return Config(
             api_key=api_key,
             base_url=base_url,
+            supabase_key=supabase_key,
             download_dir=os.getenv("CREBAIN_DOWNLOAD_DIR", "downloads"),
             timeout_seconds=int(os.getenv("CREBAIN_TIMEOUT_SECONDS", "30")),
         )
@@ -199,6 +212,9 @@ def run_example() -> None:
 
     # Use traced client so we print the explicit URLs for each request
     client = TracedCrebainClient(api_key=cfg.api_key, base_url=cfg.base_url)
+
+    # Add Supabase authorization header (required for Supabase Edge Functions)
+    client._session.headers['Authorization'] = f'Bearer {cfg.supabase_key}'
 
     target = {
         "external_entity_id": "stenn",
