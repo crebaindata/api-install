@@ -32,7 +32,7 @@ from crebain_client import CrebainClient, ApiError
 # Debug (check for hidden chars):
 #   python -c 'import os; print(repr(os.getenv("CREBAIN_API_KEY","")))'
 
-CREBAIN_API_KEY = "ck_live_3a68336aafa653ea6f1f4be0f55b0a1feb1099345f926dfa4597d2cba7ef6cd7"
+CREBAIN_API_KEY = ""  # Set via environment variable or replace with your key
 CREBAIN_BASE_URL = "https://msyixlvjyqnmujtjkbfb.supabase.co/functions/v1/api"
 
 
